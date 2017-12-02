@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
 			$table->increments('id');
             $table->string('fname');
 			$table->string('lname');
-			$table->string('access_level');
+			$table->string('access_level')->default('guest');
 			//$table->string('displayName')->nullable();
 			$table->date('dob')->nullable();
 			$table->char('sex',1)->nullable();
@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
 			$table->integer('tenant_id')->nullable();
 			$table->string('image_url')->nullable();
-			$table->json('meta');
+			$table->json('meta')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
