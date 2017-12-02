@@ -2,16 +2,10 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
-class Activity extends Model implements
-    AuthenticatableContract,
-    AuthorizableContract
+class Activity extends Model
 {
-    use Authenticatable, Authorizable;
 
     /**
      * The attributes that are mass assignable.
@@ -40,9 +34,15 @@ class Activity extends Model implements
         'meta' => 'array',
     ];
 	
+	/**
+     * User relationship
+     *
+     */
+	 
 	public function user()
     {
         return $this->belongsTo('App\User');
     }
+	
 	
 }

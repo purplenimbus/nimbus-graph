@@ -6,12 +6,15 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use App\User as User;
+use App\Activity as Activity;
+use App\Tenant as Tenant;
 
 class TenantController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-	use App\User as User;
-	use App\Activity as Activity;
+
 	/**
      * Create a new controller instance.
      *
@@ -22,63 +25,121 @@ class TenantController extends BaseController
         //
     }
 	
-	public function users($tenant_id , Request $request){
+	public function tenants(Request $request){
+		
+		$tenants = 	$request->has('paginate') ? 
+				Tenant::all()
+					->paginate($request->paginate)							
+			: 	Tenant::all();
 				
-		$users = 	$request->has('paginate') ? 
-						User::where('tenant_id',$tenant_id)
-							->paginate($request->paginate)							
-					: 	User::where('tenant_id',$tenant_id)
-							->get();
-				
-		if(sizeof($users)){
-			return response()->json($users,200);
+		if(sizeof($tenants)){
+			return response()->json($tenants,200);
 		}else{
 			
-			$message = 'no users found for tenant id : '.$tenant_id;
+			$message = 'no tenants found';
 			
 			return response()->json(['message' => $message],401);
 		}
 	}
 	
-	public function user($tenant_id,$user_id){
+	public function users($tenant , Request $request){
 		
-		$user = User::where([
-					['tenant_id', '=', $tenant_id],
-					['id', '=', $user_id],
-				])->paginate(10);
-								
-		if(sizeof($user)){
-			return response()->json($user,200);
+		$tenant_id = $this->getTenant($tenant)->id;
+		
+		if($tenant_id){
+			$query = [
+				['tenant_id', '=', $tenant_id]
+			];
+			
+			if($request->has('user_type')){
+				array_push($query,['meta->user_type', '=', $request->user_type]);
+			}
+		
+			$users = 	$request->has('paginate') ? 
+					User::where($query)
+						->paginate($request->paginate)							
+				: 	User::where($query)
+						->get();
+					
+			if(sizeof($users)){
+				return response()->json($users,200);
+			}else{
+				
+				$message = 'no users found for tenant id : '.$tenant_id;
+				
+				return response()->json(['message' => $message],401);
+			}
 		}else{
-			
-			$message = 'no user id: '.$user_id.' found for tenant id : '.$tenant_id;
-			
-			return response()->json(['message' => $message],401);
+			$message = 'tenant : '.$tenant.'does not exist';
+				
+			return response()->json(['message' => $message],404);
 		}
 	}
 	
-	public function activities($tenant_id,Request $request){
-		$query = [
-					['tenant_id', '=', $tenant_id]
-				];
+	public function user($tenant,$user_id){
 		
-		if($request->has('user_id')){
-			array_push($query,['user_id', '=', $request->user_id]);
-		}
+		$tenant_id = $this->getTenant($tenant)->id;
 		
-		if($request->has('type')){
-			array_push($query,['meta->action->type', $request->type]);
-		}
+		if($tenant_id){
+			$user = User::where([
+						['tenant_id', '=', $tenant_id],
+						['id', '=', $user_id],
+					])->paginate(10);
+									
+			if(sizeof($user)){
+				return response()->json($user,200);
+			}else{
 				
-		$activities = $request->has('paginate') ? Activity::with('user')->where($query)->paginate($request->paginate) : Activity::with('user')->where($query)->get();
-						
-		if(sizeof($activities)){
-			return response()->json($activities,200);
+				$message = 'no user id: '.$user_id.' found for tenant : '.$tenant;
+				
+				return response()->json(['message' => $message],401);
+			}
 		}else{
-			
-			$message = 'no activities found for tenant id : '.$tenant_id;
-			
-			return response()->json(['message' => $message],401);
+			$message = 'tenant : '.$tenant.'does not exist';
+				
+			return response()->json(['message' => $message],404);
 		}
+	}
+	
+	public function activities($tenant,Request $request){
+		
+		$tenant_id = $this->getTenant($tenant)->id;
+		
+		if($tenant_id){
+		
+			$query = [
+						['tenant_id', '=', $this->getTenant($tenant)->id]
+					];
+			
+			if($request->has('user_id')){
+				array_push($query,['user_id', '=', $request->user_id]);
+			}
+			
+			if($request->has('type')){
+				array_push($query,['meta->action->type', $request->type]);
+			}
+					
+			$activities = $request->has('paginate') ? Activity::with('user')->where($query)->paginate($request->paginate) : Activity::with('user')->where($query)->get();
+							
+			if(sizeof($activities)){
+				return response()->json($activities,200);
+			}else{
+				
+				$message = 'no activities found for tenant id : '.$tenant;
+				
+				return response()->json(['message' => $message],401);
+			}
+		
+		}else{
+			$message = 'tenant : '.$tenant.'does not exist';
+				
+			return response()->json(['message' => $message],404);
+		}
+	}
+	
+	public function getTenant($tenant){
+		$tenant = Tenant::where('username', $tenant)->first();
+				
+		return $tenant;
 	}
 }

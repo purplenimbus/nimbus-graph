@@ -2,32 +2,26 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
-class Tenant extends Model implements
-    AuthenticatableContract,
-    AuthorizableContract
+class Tenant extends Model
 {
-    use Authenticatable, Authorizable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name','meta'
+        'name','meta','username'
     ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
+	
+	/**
+     * Cast meta property to array
      *
-     * @var array
+     * @var object
      */
-    protected $hidden = [
-        'password',
+	 
+	protected $casts = [
+        'meta' => 'object',
     ];
 }

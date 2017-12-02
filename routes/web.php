@@ -10,16 +10,21 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-/* Tenants */
+/* Auth */
 Route::get('/login', 'LoginController@authenticate'); //List all users for a certain tenant
 
 /* Tenants */
-Route::get('{tenant_id}/users', 'TenantController@users'); //List all users for a certain tenant
-Route::post('{tenant_id}/users', 'TenantController@users'); //Update users for a certain tenant
-Route::get('{tenant_id}/users/{user_id}', 'TenantController@user'); //List all details for a certain user
-Route::post('{tenant_id}/users/{user_id}', 'TenantController@user'); //Update details for a certain user
-Route::get('{tenant_id}/activities/', 'TenantController@activities'); //List all activities for a certain tenant
-Route::post('{tenant_id}/activities/', 'TenantController@activities'); //Update activities for a certain tenant
+Route::get('/tenants', 'TenantController@tenants'); //List all tenants
+Route::post('/tenants', 'TenantController@tenants'); //Update a certain tenant
+	
+Route::prefix('{tenant}')->group(function () {
+	Route::get('/users', 'TenantController@users'); //List all users for a certain tenant
+	Route::post('/users', 'TenantController@users'); //Update users for a certain tenant
+	Route::get('/users/{user_id}', 'TenantController@user'); //List all details for a certain user
+	Route::post('/users/{user_id}', 'TenantController@user'); //Update details for a certain user
+	Route::get('/activities/', 'TenantController@activities'); //List all activities for a certain tenant
+	Route::post('/activities/', 'TenantController@activities'); //Update activities for a certain tenant
+});
 
 /*Route::get('/', function () {
     // Build the query parameter string to pass auth information to our request

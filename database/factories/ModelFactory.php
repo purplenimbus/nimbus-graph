@@ -16,6 +16,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Tenant::class, function (Faker $faker) {
     return [
         'name' => $faker->company,
+        'username' => (string)$faker->randomNumber(5)
     ];
 });
 
@@ -27,6 +28,18 @@ $factory->define(App\User::class, function (Faker $faker) {
         'address' => $faker->address,
 		'image_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi1SYU1kgu3FtGlMpm5W7K2zuZHLgBQZzf34TQ3_Qe8LUd8s5C'
     ];
+});
+
+$factory->defineAs(App\User::class, 'student', function () use ($factory) {
+    $user = $factory->raw(App\User::class);
+
+	return array_merge($user, ["meta" => [ "user_type" => "student" , "business_unit" => "school" ]]);
+});
+
+$factory->defineAs(App\User::class, 'teacher', function () use ($factory) {
+    $user = $factory->raw(App\User::class);
+	
+    return array_merge($user, ["meta" => [ "user_type" => "teacher" , "business_unit" => "school" ]]);
 });
 
 $factory->define(App\Activity::class, function (Faker $faker) {
