@@ -65,7 +65,7 @@ class TenantController extends BaseController
 				return response()->json($users,200);
 			}else{
 				
-				$message = 'no users found for tenant id : '.$tenant_id;
+				$message = 'no users found for tenant : '.$tenant_id;
 				
 				return response()->json(['message' => $message],401);
 			}
@@ -125,7 +125,7 @@ class TenantController extends BaseController
 				return response()->json($activities,200);
 			}else{
 				
-				$message = 'no activities found for tenant id : '.$tenant;
+				$message = 'no activities found for tenant : '.$tenant;
 				
 				return response()->json(['message' => $message],401);
 			}

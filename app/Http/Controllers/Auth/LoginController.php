@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Tenant as Tenant;
 
 class LoginController extends Controller
 {
@@ -37,36 +40,25 @@ class LoginController extends Controller
 		
         $credentials = $request->only('email', 'password');
 		
-		//$tenant_id = $this->getTenant($request->tenant)->id;
-				
-		$auth = Auth::attempt($request->only('email', 'password'));
+		$tenant = $this->getTenant($request->tenant);
 		
-		var_dump($credentials);
-		
-        /*try {
-            // verify the credentials and create a token for the user
-			$query = 	[
-							['email', '=', $credentials['email']],
-							['password', '=', $credentials['password']],
-							//['tenant_id', '=', $tenant_id],
-						];
-						
-			$user = App\User::where($query)->firstOrFail();
+        if(isset($tenant->id)){
+			try {
+				// verify the credentials and create a token for the user
+				if (! $token = JWTAuth::attempt($credentials,$tenant->id)) {
+					return response()->json(['error' => 'invalid_credentials'], 401);
+				}
+			} catch (JWTException $e) {
+				// something went wrong
+				return response()->json(['error' => 'could_not_create_token'], 500);
+			}
 			
-			var_dump($user);
-			
-			var_dump($query);
-			
-            if (! $user) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
-            }
-        } catch (Exception $e) {
-            // something went wrong
-            return response()->json(['error' => 'could_not_create_token'], 500);
-        }*/
-		
-        // if no errors are encountered we can return a JWT
-        return response()->json(compact(['token','user']));
+			$user = Auth::user();
+			// if no errors are encountered we can return a JWT
+			return response()->json(compact(['token','user']));
+		}else{
+			return response()->json(['error' => 'tenant not found'], 500);
+		}
     }
 	
 	public function getTenant($tenant){

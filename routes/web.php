@@ -13,12 +13,13 @@
 /* Auth */
 //Route::post('/login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@authenticate']); //List all users for a certain tenant
 //Route::get('/login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@authenticate']); //List all users for a certain tenant
+Route::post('login',	'Auth\LoginController@authenticate');
 
 /* Tenants */
-Route::get('/tenants', 'TenantController@tenants'); //List all tenants
-Route::post('/tenants', 'TenantController@tenants'); //Update a certain tenant
+Route::get('v'.env('API_VERSION',1).'/tenants', 'TenantController@tenants'); //List all tenants
+Route::post('v'.env('API_VERSION',1).'/tenants', 'TenantController@tenants'); //Update a certain tenant
 	
-Route::prefix('{tenant}')->group(function () {
+Route::prefix('v'.env('API_VERSION',1).'/{tenant}')->group(function () {
 	Route::get('/users', 'TenantController@users'); //List all users for a certain tenant
 	Route::post('/users', 'TenantController@users'); //Update users for a certain tenant
 	Route::get('/users/{user_id}', 'TenantController@user'); //List all details for a certain user
@@ -58,6 +59,6 @@ Route::get('callback', function (Request $request) {
     return json_decode((string) $response->getBody(), true)['access_token'];
 });
 */
-Auth::routes();
+//Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
