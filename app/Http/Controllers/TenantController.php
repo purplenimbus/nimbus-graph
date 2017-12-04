@@ -84,7 +84,7 @@ class TenantController extends BaseController
 			$user = User::where([
 						['tenant_id', '=', $tenant_id->id],
 						['id', '=', $user_id],
-					])->paginate(10);
+					])->get();
 									
 			if(sizeof($user)){
 				return response()->json($user,200);
