@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
 	public function run()
 	{
-		$admin 	=	factory(App\User::class, 1)->create([
+		$admin 	=	factory(App\User::class,'admin',1)->create([
 						'tenant_id' => 1,
 						'image_url' =>	'https://www.victoria147.com/wp-content/uploads/2014/10/user-avatar-placeholder.png',
 						'fname'		=>	'anthony',

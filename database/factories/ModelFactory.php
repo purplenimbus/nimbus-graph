@@ -42,6 +42,12 @@ $factory->defineAs(App\User::class, 'teacher', function () use ($factory) {
     return array_merge($user, ["meta" => [ "user_type" => "teacher" , "business_unit" => "school" ]]);
 });
 
+$factory->defineAs(App\User::class, 'admin', function () use ($factory) {
+    $user = $factory->raw(App\User::class);
+	
+    return array_merge($user, ["meta" => [ "user_type" => "admin" , "business_unit" => "school" ]]);
+});
+
 $factory->define(App\Activity::class, function (Faker $faker) {
 	$types =	[
 		[

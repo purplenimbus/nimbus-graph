@@ -44,11 +44,11 @@ class TenantController extends BaseController
 	
 	public function users($tenant , Request $request){
 		
-		$tenant_id = $this->getTenant($tenant)->id;
+		$tenant_id = $this->getTenant($tenant);
 		
-		if($tenant_id){
+		if(isset($tenant_id->id)){
 			$query = [
-				['tenant_id', '=', $tenant_id]
+				['tenant_id', '=', $tenant_id->id]
 			];
 			
 			if($request->has('user_type')){
@@ -70,7 +70,7 @@ class TenantController extends BaseController
 				return response()->json(['message' => $message],401);
 			}
 		}else{
-			$message = 'tenant : '.$tenant.'does not exist';
+			$message = 'tenant : '.$tenant.' does not exist';
 				
 			return response()->json(['message' => $message],404);
 		}
@@ -78,11 +78,11 @@ class TenantController extends BaseController
 	
 	public function user($tenant,$user_id){
 		
-		$tenant_id = $this->getTenant($tenant)->id;
+		$tenant_id = $this->getTenant($tenant);
 		
-		if($tenant_id){
+		if(isset($tenant_id->id)){
 			$user = User::where([
-						['tenant_id', '=', $tenant_id],
+						['tenant_id', '=', $tenant_id->id],
 						['id', '=', $user_id],
 					])->paginate(10);
 									
@@ -95,7 +95,7 @@ class TenantController extends BaseController
 				return response()->json(['message' => $message],401);
 			}
 		}else{
-			$message = 'tenant : '.$tenant.'does not exist';
+			$message = 'tenant : '.$tenant.' does not exist';
 				
 			return response()->json(['message' => $message],404);
 		}
@@ -103,12 +103,12 @@ class TenantController extends BaseController
 	
 	public function activities($tenant,Request $request){
 		
-		$tenant_id = $this->getTenant($tenant)->id;
+		$tenant_id = $this->getTenant($tenant);
 		
-		if($tenant_id){
+		if(isset($tenant_id->id)){
 		
 			$query = [
-						['tenant_id', '=', $this->getTenant($tenant)->id]
+						['tenant_id', '=', $tenant_id->id]
 					];
 			
 			if($request->has('user_id')){
@@ -119,7 +119,7 @@ class TenantController extends BaseController
 				array_push($query,['meta->action->type', $request->type]);
 			}
 					
-			$activities = $request->has('paginate') ? Activity::with('user')->where($query)->paginate($request->paginate) : Activity::with('user')->where($query)->get();
+			$activities = $request->has('paginate') ? Activity::where($query)->paginate($request->paginate) : Activity::where($query)->get();
 							
 			if(sizeof($activities)){
 				return response()->json($activities,200);
@@ -131,15 +131,20 @@ class TenantController extends BaseController
 			}
 		
 		}else{
-			$message = 'tenant : '.$tenant.'does not exist';
+			$message = 'tenant : '.$tenant.' does not exist';
 				
 			return response()->json(['message' => $message],404);
 		}
 	}
 	
 	public function getTenant($tenant){
-		$tenant = Tenant::where('username', $tenant)->first();
-				
-		return $tenant;
+		try{
+			$tenant = Tenant::where('username', $tenant)->first();
+			
+			return $tenant;
+			
+		}catch(Exception $e){
+			return false;
+		}
 	}
 }

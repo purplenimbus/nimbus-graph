@@ -11,7 +11,8 @@
 |
 */
 /* Auth */
-Route::get('/login', 'LoginController@authenticate'); //List all users for a certain tenant
+//Route::post('/login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@authenticate']); //List all users for a certain tenant
+//Route::get('/login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@authenticate']); //List all users for a certain tenant
 
 /* Tenants */
 Route::get('/tenants', 'TenantController@tenants'); //List all tenants
@@ -57,3 +58,6 @@ Route::get('callback', function (Request $request) {
     return json_decode((string) $response->getBody(), true)['access_token'];
 });
 */
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
