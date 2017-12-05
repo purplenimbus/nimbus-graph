@@ -40,12 +40,12 @@ class LoginController extends Controller
 		
         $credentials = $request->only('email', 'password');
 		
-		$tenant = $this->getTenant($request->tenant);
+		//$tenant = $this->getTenant($request->tenant);
 		
-        if(isset($tenant->id)){
+        //if(isset($tenant->id)){
 			try {
 				// verify the credentials and create a token for the user
-				if (! $token = JWTAuth::attempt($credentials,$tenant->id)) {
+				if (! $token = JWTAuth::attempt($credentials)) {
 					return response()->json(['error' => 'invalid_credentials'], 401);
 				}
 			} catch (JWTException $e) {
@@ -56,9 +56,9 @@ class LoginController extends Controller
 			$user = Auth::user();
 			// if no errors are encountered we can return a JWT
 			return response()->json(compact(['token','user']));
-		}else{
-			return response()->json(['error' => 'tenant not found'], 500);
-		}
+		//}else{
+			//return response()->json(['error' => 'tenant not found'], 500);
+		//}
     }
 	
 	public function getTenant($tenant){

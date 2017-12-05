@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
 						
 					});
 			
-		$records = factory(App\Tenant::class, 1)
+		$records = factory(App\Tenant::class, 3)
 			->create()
 			->each(function($tenant){
 				
@@ -95,8 +95,26 @@ class DatabaseSeeder extends Seeder
 					]);
 					
 				});
-
+				
+				factory(App\Transaction::class,'income',15)
+				->create([
+					'tenant_id' => $tenant->id,
+				]);
+				
+				factory(App\Transaction::class,'expense',5)
+				->create([
+					'tenant_id' => $tenant->id,
+				]);
 			});
 		
+		$services = [
+			[
+				'name' => '',
+				'meta' => [
+					'endpoint' => '',
+					'cost' => 0
+				],
+			]
+		];
 	}
 }

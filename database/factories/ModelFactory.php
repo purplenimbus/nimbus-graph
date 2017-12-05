@@ -94,3 +94,45 @@ $factory->define(App\Activity::class, function (Faker $faker) {
 	
     return $data;
 });
+
+$factory->define(App\Transaction::class, function (Faker $faker) {
+    return [
+        'description' => $faker->sentence(6,true)
+    ];
+});
+
+$factory->defineAs(App\Transaction::class, 'income', function (Faker $faker) use ($factory) {
+    $transaction = $factory->raw(App\Transaction::class);
+	
+    return array_merge($transaction, [
+										"meta" => 
+										[ 
+											"type" => "income" , 
+											"value" => $faker->numberBetween(1000, 500000) , 
+											"date" => $faker->dateTimeThisYear('now', null)  ,
+											"currency" => [
+												"full_name"  => "naira",
+												"short_name" => "NGN",
+												"symbol" 	 => "₦"
+											]
+										]
+									]);
+});
+
+$factory->defineAs(App\Transaction::class, 'expense', function (Faker $faker) use ($factory) {
+    $transaction = $factory->raw(App\Transaction::class);
+	
+    return array_merge($transaction, [
+										"meta" => 
+											[ 
+												"type" => "expense" , 
+												"value" => $faker->numberBetween(1000, 500000),
+												"date" => $faker->dateTimeThisYear('now', null),
+												"currency" => [
+													"full_name"  => "naira",
+													"short_name" => "NGN",
+													"symbol" 	 => "₦"
+												]
+											]
+									]);
+});

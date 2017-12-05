@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\User as User;
 use App\Activity as Activity;
 use App\Tenant as Tenant;
+use App\Transaction as Transaction;
 
 class TenantController extends BaseController
 {
@@ -145,6 +146,38 @@ class TenantController extends BaseController
 			
 		}catch(Exception $e){
 			return false;
+		}
+	}
+	
+	public function transactions($tenant,Request $request){
+		
+		$tenant_id = $this->getTenant($tenant);
+		
+		if(isset($tenant_id->id)){
+		
+			$query = [
+						['tenant_id', '=', $tenant_id->id]
+					];
+			
+			if($request->has('type')){
+				array_push($query,['meta->type', '=', $request->type]);
+			}
+					
+			$transactions = $request->has('paginate') ? Transaction::where($query)->paginate($request->paginate) : Transaction::where($query)->get();
+							
+			if(sizeof($transactions)){
+				return response()->json($transactions,200);
+			}else{
+				
+				$message = 'no transactions found for tenant : '.$tenant;
+				
+				return response()->json(['message' => $message],401);
+			}
+		
+		}else{
+			$message = 'tenant : '.$tenant.' does not exist';
+				
+			return response()->json(['message' => $message],404);
 		}
 	}
 }
