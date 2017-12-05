@@ -23,7 +23,7 @@ Route::prefix('v'.env('API_VERSION',1).'/{tenant}')->group(function () {
 	Route::get('/users', 'TenantController@users'); //List all users for a certain tenant
 	Route::post('/users', 'TenantController@users'); //Update users for a certain tenant
 	Route::get('/users/{user_id}', 'TenantController@user'); //List all details for a certain user
-	Route::post('/users/{user_id}', 'TenantController@user'); //Update details for a certain user
+	Route::post('/users/{user_id}', 'TenantController@userSave'); //Update details for a certain user
 	Route::get('/activities/', 'TenantController@activities'); //List all activities for a certain tenant
 	Route::post('/activities/', 'TenantController@activities'); //Update activities for a certain tenant
 	Route::get('/transactions/', 'TenantController@transactions'); //List all activities for a certain tenant

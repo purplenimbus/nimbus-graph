@@ -102,6 +102,33 @@ class TenantController extends BaseController
 		}
 	}
 	
+	public function userSave($tenant,$user_id,Request $request){
+		
+		$tenant_id = $this->getTenant($tenant);
+		$data = $request->all();
+		unset($data['id']);
+		
+		if(isset($tenant_id->id)){
+			$user = User::where([
+						['tenant_id', '=', $tenant_id->id],
+						['id', '=', $request->id],
+					])->update($data)->save();
+									
+			if(sizeof($user)){
+				return response()->json($user,200);
+			}else{
+				
+				$message = 'no user id: '.$user_id.' found for tenant : '.$tenant;
+				
+				return response()->json(['message' => $message],401);
+			}
+		}else{
+			$message = 'tenant : '.$tenant.' does not exist';
+				
+			return response()->json(['message' => $message],404);
+		}
+	}
+	
 	public function activities($tenant,Request $request){
 		
 		$tenant_id = $this->getTenant($tenant);
