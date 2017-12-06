@@ -18,7 +18,7 @@ class Transaction extends Model implements
      * @var array
      */
     protected $fillable = [
-        'tenant_id','meta','description'
+        'tenant_id','meta','description','currency_id'
     ];
 
     /**
@@ -38,5 +38,15 @@ class Transaction extends Model implements
 	protected $casts = [
         'meta' => 'object',
     ];
+	
+	/**
+     * Currency Relationship
+     *
+     * @var array
+     */
+	 
+	function currency(){
+		return $this->belongsTo('App\Currency');
+	}
 	
 }

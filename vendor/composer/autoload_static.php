@@ -401,6 +401,7 @@ class ComposerStaticInit3e03a7f205f21275135ac8c162109b3e
     public static $classMap = array (
         'App\\Activity' => __DIR__ . '/../..' . '/app/Activity.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Currency' => __DIR__ . '/../..' . '/app/Currency.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',

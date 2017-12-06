@@ -190,7 +190,7 @@ class TenantController extends BaseController
 				array_push($query,['meta->type', '=', $request->type]);
 			}
 					
-			$transactions = $request->has('paginate') ? Transaction::where($query)->paginate($request->paginate) : Transaction::where($query)->get();
+			$transactions = $request->has('paginate') ? Transaction::with('currency')->where($query)->paginate($request->paginate) : Transaction::with('currency')->where($query)->get();
 							
 			if(sizeof($transactions)){
 				return response()->json($transactions,200);

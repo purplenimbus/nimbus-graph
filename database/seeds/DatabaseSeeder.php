@@ -116,11 +116,7 @@ class DatabaseSeeder extends Seeder
 					'rate' => 'monthly',
 					'icon' => 'https://d30y9cdsu7xlg0.cloudfront.net/png/1134418-200.png',
 					'description' => '',
-					"currency" => [
-						"full_name"  => "naira",
-						"short_name" => "NGN",
-						"symbol" 	 => "₦"
-					]
+					"currency" => 1
 				],
 			],[
 				'name' => 'ems',
@@ -130,11 +126,7 @@ class DatabaseSeeder extends Seeder
 					'rate' => 'monthly',
 					'icon' => 'https://d30y9cdsu7xlg0.cloudfront.net/png/1134418-200.png',
 					'description' => '',
-					"currency" => [
-						"full_name"  => "naira",
-						"short_name" => "NGN",
-						"symbol" 	 => "₦"
-					]
+					"currency_id" => 1
 				],
 			],[
 				'name' => 'accounting',
@@ -144,11 +136,7 @@ class DatabaseSeeder extends Seeder
 					'rate' => 'monthly',
 					'icon' => 'https://d30y9cdsu7xlg0.cloudfront.net/png/1134418-200.png',
 					'description' => '',
-					"currency" => [
-						"full_name"  => "naira",
-						"short_name" => "NGN",
-						"symbol" 	 => "₦"
-					]
+					"currency_id" => 1
 				],
 			],[
 				'name' => 'ems',
@@ -158,17 +146,25 @@ class DatabaseSeeder extends Seeder
 					'rate' => 'monthly',
 					'icon' => 'https://d30y9cdsu7xlg0.cloudfront.net/png/1134418-200.png',
 					'description' => '',
-					"currency" => [
-						"full_name"  => "naira",
-						"short_name" => "NGN",
-						"symbol" 	 => "₦"
-					]
+					"currency_id" => 1
 				],
 			]
 		];
 		
 		foreach($services as $service){
 			App\Service::create($service);
+		}
+		
+		$currencies = [
+			[
+				'short_name' => 'NGN',
+				'long_name'  => 'naira',
+				'symbol'	=>	'₦'
+			]
+		];
+		
+		foreach($currencies as $currency){
+			App\Currency::create($currency);
 		}
 	}
 }

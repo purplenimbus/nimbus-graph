@@ -17,6 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->increments('id');
 			$table->integer('tenant_id');
 			$table->string('description');
+			$table->string('currency_id')->default(1);
 			$table->json('meta')->nullable();
             $table->timestamps();
         });
