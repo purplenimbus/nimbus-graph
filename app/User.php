@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'fname','lname', 'email', 'dob','sex','image_url','tenant_id','meta','password'
+        'fname','lname', 'email', 'dob','sex','image_url','tenant_id','meta','password','tenant'
     ];
 
     /**
@@ -26,7 +26,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password','tenant_id'
+        'password',/*'tenant_id',*/'created_at','updated_at','remember_token'
     ];
 	
 	/**
@@ -38,6 +38,10 @@ class User extends Authenticatable implements JWTSubject
 	protected $casts = [
         'meta' => 'object',
     ];
+	
+	function tenant(){
+		return $this->belongsTo('App\Tenant');
+	}
 	
 	/**
      * Get the identifier that will be stored in the subject claim of the JWT.

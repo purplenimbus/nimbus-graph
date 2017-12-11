@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Tenant as Tenant;
+use App\User as User;
 
 class LoginController extends Controller
 {
@@ -53,7 +54,8 @@ class LoginController extends Controller
 				return response()->json(['error' => 'could_not_create_token'], 500);
 			}
 			
-			$user = Auth::user();
+			$user = Auth::user()->load('tenant');
+			
 			// if no errors are encountered we can return a JWT
 			return response()->json(compact(['token','user']));
 		//}else{

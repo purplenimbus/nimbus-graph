@@ -15,10 +15,12 @@
 //Route::get('/login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@authenticate']); //List all users for a certain tenant
 Route::post('login',	'Auth\LoginController@authenticate');
 
-/* Tenants */
+
 Route::get('v'.env('API_VERSION',1).'/tenants', 'TenantController@tenants'); //List all tenants
 Route::post('v'.env('API_VERSION',1).'/tenants', 'TenantController@tenants'); //Update a certain tenant
-	
+Route::get('v'.env('API_VERSION',1).'/services', 'TenantController@services'); //List all services
+
+/* Tenants */
 Route::prefix('v'.env('API_VERSION',1).'/{tenant}')->group(function () {
 	Route::get('/users', 'TenantController@users'); //List all users for a certain tenant
 	Route::post('/users', 'TenantController@users'); //Update users for a certain tenant

@@ -11,6 +11,7 @@ use App\User as User;
 use App\Activity as Activity;
 use App\Tenant as Tenant;
 use App\Transaction as Transaction;
+use App\Service as Service;
 
 class TenantController extends BaseController
 {
@@ -57,9 +58,9 @@ class TenantController extends BaseController
 			}
 		
 			$users = 	$request->has('paginate') ? 
-					User::where($query)
+					User::with('tenant')->where($query)
 						->paginate($request->paginate)							
-				: 	User::where($query)
+				: 	User::with('tenant')->where($query)
 						->get();
 					
 			if(sizeof($users)){
@@ -107,21 +108,29 @@ class TenantController extends BaseController
 		$tenant_id = $this->getTenant($tenant);
 		$data = $request->all();
 		unset($data['id']);
+		unset($data['meta']);
+				
+		//var_dump($data);
 		
 		if(isset($tenant_id->id)){
-			$user = User::where([
+			
+			try {
+				$user = User::where([
 						['tenant_id', '=', $tenant_id->id],
 						['id', '=', $request->id],
-					])->update($data)->save();
-									
-			if(sizeof($user)){
-				return response()->json($user,200);
-			}else{
+					])->first();
+			  
+				$user->meta = $request->meta;
 				
-				$message = 'no user id: '.$user_id.' found for tenant : '.$tenant;
+				$user->fill($data)->save();
+			  
+				return response()->json($user,200);
+			} catch (ModelNotFoundException $ex) {
+			  	$message = 'no user id: '.$user_id.' found for tenant : '.$tenant;
 				
 				return response()->json(['message' => $message],401);
 			}
+		
 		}else{
 			$message = 'tenant : '.$tenant.' does not exist';
 				
@@ -178,6 +187,8 @@ class TenantController extends BaseController
 	
 	public function transactions($tenant,Request $request){
 		
+		$query = [];
+		
 		$tenant_id = $this->getTenant($tenant);
 		
 		if(isset($tenant_id->id)){
@@ -186,6 +197,7 @@ class TenantController extends BaseController
 						['tenant_id', '=', $tenant_id->id]
 					];
 			
+
 			if($request->has('type')){
 				array_push($query,['meta->type', '=', $request->type]);
 			}
@@ -205,6 +217,31 @@ class TenantController extends BaseController
 			$message = 'tenant : '.$tenant.' does not exist';
 				
 			return response()->json(['message' => $message],404);
+		}
+	}
+	
+	public function services(Request $request){
+		
+		$query = [];
+		
+		if($request->has('tenant')){
+			
+			$tenant_id = $this->getTenant($tenant);
+			
+			if(isset($tenant_id->id)){
+				array_push($query,['tenant_id', '=', $tenant_id->id]);
+			}
+		}
+				
+		$services = $request->has('paginate') ? Service::with('currency')->where($query)->paginate($request->paginate) : Service::with('currency')->where($query)->get();
+						
+		if(sizeof($services)){
+			return response()->json($services,200);
+		}else{
+			
+			$message = $request->has('tenant') ? 'no services found for tenant : '.$tenant : 'no services found';
+			
+			return response()->json(['message' => $message],401);
 		}
 	}
 }

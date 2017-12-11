@@ -12,7 +12,7 @@ class Service extends Model
      * @var array
      */
     protected $fillable = [
-        'name','meta'
+        'name','meta','currency_id',
     ];
 	
 	/**
@@ -24,4 +24,17 @@ class Service extends Model
 	protected $casts = [
         'meta' => 'object',
     ];
+	
+	/**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'currency_id'
+    ];
+	
+	function currency(){
+		return $this->belongsTo('App\Currency');
+	}
 }
