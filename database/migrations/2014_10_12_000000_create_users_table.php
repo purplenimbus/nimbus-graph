@@ -22,7 +22,6 @@ class CreateUsersTable extends Migration
 			$table->date('dob')->nullable();
 			$table->char('sex',1)->nullable();
             $table->string('email')->unique();
-            $table->string('address')->nullable();
             $table->string('password');
 			$table->integer('tenant_id')->nullable();
 			$table->string('image_url')->nullable();

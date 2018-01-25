@@ -26,28 +26,27 @@ $factory->define(App\User::class, function (Faker $faker) {
         'fname' => $faker->name,
         'lname' => $faker->name,
         'email' => $faker->email,
-        'address' => $faker->address,
         'password' => app('hash')->make('123456'),
 		'image_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi1SYU1kgu3FtGlMpm5W7K2zuZHLgBQZzf34TQ3_Qe8LUd8s5C'
     ];
 });
 
-$factory->defineAs(App\User::class, 'student', function () use ($factory) {
+$factory->defineAs(App\User::class, 'student', function (Faker $faker) use ($factory) {
     $user = $factory->raw(App\User::class);
 
-	return array_merge($user, ["meta" => [ "user_type" => "student" , "business_unit" => "school" ]]);
+	return array_merge($user, ["meta" => [ "user_type" => "student" , "business_unit" => "school" ,  "address" => ["street" => $faker->streetAddress]]]);
 });
 
-$factory->defineAs(App\User::class, 'teacher', function () use ($factory) {
+$factory->defineAs(App\User::class, 'teacher', function (Faker $faker) use ($factory) {
     $user = $factory->raw(App\User::class);
 	
-    return array_merge($user, ["meta" => [ "user_type" => "teacher" , "business_unit" => "school" ]]);
+    return array_merge($user, ["meta" => [ "user_type" => "teacher" , "business_unit" => "school","address" => ["street" => $faker->streetAddress]]]);
 });
 
-$factory->defineAs(App\User::class, 'admin', function () use ($factory) {
+$factory->defineAs(App\User::class, 'admin', function (Faker $faker) use ($factory) {
     $user = $factory->raw(App\User::class);
 	
-    return array_merge($user, ["meta" => [ "user_type" => "admin" , "business_unit" => "school" ]]);
+    return array_merge($user, ["meta" => [ "user_type" => "admin" , "business_unit" => "school","address" => ["street" => $faker->streetAddress]]]);
 });
 
 $factory->define(App\Activity::class, function (Faker $faker) {

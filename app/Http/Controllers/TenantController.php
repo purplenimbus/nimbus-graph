@@ -119,7 +119,7 @@ class TenantController extends BaseController
 		$tenant_id = $this->getTenant($tenant);
 		$data = $request->all();
 		unset($data['id']);
-		unset($data['meta']);
+		unset($data['tenant']);
 				
 		//var_dump($data);
 		
@@ -131,9 +131,11 @@ class TenantController extends BaseController
 						['id', '=', $request->id],
 					])->first();
 			  
-				$user->meta = $request->meta;
+				//$user->meta = $request->meta;
 				
-				$user->fill($data)->save();
+				$user->update($data);
+				
+				$user->save();
 			  
 				return response()->json($user,200);
 			} catch (ModelNotFoundException $ex) {
