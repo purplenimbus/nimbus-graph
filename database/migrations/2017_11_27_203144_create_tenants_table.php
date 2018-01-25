@@ -17,6 +17,7 @@ class CreateTenantsTable extends Migration
             $table->increments('id');
 			$table->string('username')->unique();
 			$table->string('name');
+			$table->string('email')->unique();
 			$table->json('meta')->nullable();
             $table->timestamps();
         });

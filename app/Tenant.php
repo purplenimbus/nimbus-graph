@@ -12,7 +12,7 @@ class Tenant extends Model
      * @var array
      */
     protected $fillable = [
-        'name','meta','username'
+        'name','meta','username','email'
     ];
 	
 	/**

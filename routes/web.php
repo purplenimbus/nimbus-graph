@@ -17,7 +17,7 @@ Route::post('login',	'Auth\LoginController@authenticate');
 
 
 Route::get('v'.env('API_VERSION',1).'/tenants', 'TenantController@tenants'); //List all tenants
-Route::post('v'.env('API_VERSION',1).'/tenants', 'TenantController@tenants'); //Update a certain tenant
+Route::post('v'.env('API_VERSION',1).'/tenants', 'TenantController@newTenant'); //Update a certain tenant
 Route::get('v'.env('API_VERSION',1).'/services', 'TenantController@services'); //List all services
 
 /* Tenants */

@@ -12,6 +12,8 @@ use App\Activity as Activity;
 use App\Tenant as Tenant;
 use App\Transaction as Transaction;
 use App\Service as Service;
+use App\Http\Requests\StoreTenant as StoreTenant;
+
 
 class TenantController extends BaseController
 {
@@ -42,6 +44,15 @@ class TenantController extends BaseController
 			
 			return response()->json(['message' => $message],401);
 		}
+	}
+	
+	public function newTenant(StoreTenant $request){
+		
+		$tenant = Tenant::create($request->all());
+		
+		$user = User::create(["email" => $tenant->email,"tenant_id" => $tenant->id, "password" => app('hash')->make($request->password) , "access_level" => "admin"]);
+	
+		return response()->json(['data' => $tenant],200);
 	}
 	
 	public function users($tenant , Request $request){

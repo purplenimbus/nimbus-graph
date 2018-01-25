@@ -16,7 +16,8 @@ use Faker\Generator as Faker;
 $factory->define(App\Tenant::class, function (Faker $faker) {
     return [
         'name' => $faker->company,
-        'username' => (string)$faker->randomNumber(5)
+        'username' => (string)$faker->randomNumber(5),
+        'email' => (string)$faker->safeEmail()
     ];
 });
 
@@ -26,6 +27,7 @@ $factory->define(App\User::class, function (Faker $faker) {
         'lname' => $faker->name,
         'email' => $faker->email,
         'address' => $faker->address,
+        'password' => app('hash')->make('123456'),
 		'image_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi1SYU1kgu3FtGlMpm5W7K2zuZHLgBQZzf34TQ3_Qe8LUd8s5C'
     ];
 });
